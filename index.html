@@ -1,0 +1,384 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FTE Vendor Daily Priorities</title>
+<meta name="description" content="Daily priority order for FTE Vendors completing FQCs, Flyer Reviews, Page Swaps and Uploads.">
+<style>
+  /* Nothing here is loaded from the internet. This page is fully self-contained
+     so it works offline, inside an iframe, and will not break over time. */
+
+  :root {
+    color-scheme: dark;
+
+    --bg:            #121212;
+    --card:          #1c1c1c;
+    --card-hover:    #232323;
+    --border:        #2b2b2b;
+    --border-hover:  #3d3d3d;
+
+    --text:          #f0f0f0;
+    --text-muted:    #9a9a9a;
+    --text-label:    #8a8a8a;
+
+    --accent-red:    #e5484d;
+    --accent-amber:  #d99a2b;
+    --accent-green:  #2bb894;
+
+    --badge-bg:      rgba(56, 139, 253, 0.16);
+    --badge-border:  rgba(56, 139, 253, 0.34);
+    --badge-text:    #79bbff;
+
+    --focus:         #79bbff;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    /* Painted explicitly so an embedding page's own theme can't show through. */
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .chart {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 22px 18px 28px;
+  }
+
+  .sr-only {
+    position: absolute;
+    width: 1px; height: 1px;
+    margin: -1px; padding: 0;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  /* ── Section ("TODAY'S DEADLINES" / "REMAINING WORK") ───────────────── */
+
+  .section + .section { margin-top: 24px; }
+
+  .section-label {
+    margin: 0 0 10px 2px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--text-label);
+  }
+
+  .cards {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  /* ── Priority card ──────────────────────────────────────────────────── */
+
+  .card {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 15px 18px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    border-radius: 10px;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .cards li + li { margin-top: 10px; }
+
+  .card--red   { --accent: var(--accent-red); }
+  .card--amber { --accent: var(--accent-amber); }
+  .card--green { --accent: var(--accent-green); }
+
+  /* Only cards that actually go somewhere respond to the cursor. */
+  a.card { cursor: pointer; transition: background-color .12s ease, border-color .12s ease; }
+  a.card:hover { background: var(--card-hover); border-color: var(--border-hover); }
+  a.card:hover .card-link-icon { color: var(--text); }
+  a.card:focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: 2px;
+  }
+
+  .card-number {
+    flex: 0 0 auto;
+    width: 26px; height: 26px;
+    margin-top: 1px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: #ffffff;
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 26px;
+    text-align: center;
+  }
+
+  .card-body { flex: 1 1 auto; min-width: 0; }
+
+  .card-title {
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.45;
+  }
+
+  .card-meta {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 5px;
+    font-size: 12.5px;
+    line-height: 1.4;
+    color: var(--text-muted);
+  }
+
+  .card-meta svg { flex: 0 0 auto; }
+
+  .card-badge {
+    flex: 0 0 auto;
+    margin-top: 2px;
+    padding: 4px 11px;
+    border: 1px solid var(--badge-border);
+    border-radius: 999px;
+    background: var(--badge-bg);
+    color: var(--badge-text);
+    font-size: 11.5px;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  /* Always visible, not hover-only — phones have no hover, and a clickable
+     card needs to look clickable before you touch it. */
+  .card-link-icon {
+    flex: 0 0 auto;
+    margin-top: 5px;
+    color: var(--text-label);
+    transition: color .12s ease;
+  }
+
+  /* ── Footnote ───────────────────────────────────────────────────────── */
+
+  .note {
+    display: flex;
+    align-items: flex-start;
+    gap: 11px;
+    margin-top: 20px;
+    padding: 14px 16px;
+    background: #191919;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    font-size: 12.5px;
+    line-height: 1.55;
+    color: #a8a8a8;
+  }
+
+  .note svg {
+    flex: 0 0 auto;
+    margin-top: 2px;
+    color: var(--text-label);
+  }
+
+  @media (max-width: 480px) {
+    .chart { padding: 18px 14px 24px; }
+    .card { padding: 14px 15px; gap: 11px; }
+    .card-title { font-size: 14.5px; }
+    /* The badge keeps its place beside the title; the title simply wraps to
+       more lines. Letting the row wrap instead pushed the number pill and the
+       badge onto lines of their own, which read as separate items. */
+    .card-badge { padding: 4px 9px; font-size: 11px; }
+  }
+</style>
+</head>
+<body>
+
+<main class="chart">
+  <h1 class="sr-only">FTE Vendor Daily Priorities</h1>
+  <div id="chart-body"></div>
+</main>
+
+<script>
+/* ═══════════════════════════════════════════════════════════════════════
+   EDIT BELOW — this is the entire chart.
+   Everything above this line is styling; you shouldn't need to touch it.
+
+   Each priority is one { ... } block. Fields:
+
+     group    Section heading it sits under. Consecutive priorities sharing
+              the same group are drawn under one heading.
+     title    The instruction the vendor reads. Keep the curly quotes “ ”.
+     meta     Small grey line underneath. Use null for none.
+     fteOnly  true shows the blue "FTE Only" badge.
+     accent   'red' | 'amber' | 'green' — the left edge and number colour.
+     url      A ClickUp link makes the whole card clickable.
+              Use null to leave the card as plain text.
+
+   Numbering is automatic — reorder or insert a priority and the numbers
+   look after themselves.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+const PRIORITIES = [
+  {
+    group:   "Today's Deadlines",
+    title:   'Complete all FQCs for all runs with a “Due date” of “Today”',
+    meta:    'Due before 3 PM EST',
+    fteOnly: false,
+    accent:  'red',
+    url:     'https://app.clickup.com/t/9003147350/86e2tyev2'
+  },
+  {
+    group:   "Today's Deadlines",
+    title:   'Complete all Page Swap or revision tasks for LIVE flyers or flyers with a “Due date” of “Today”',
+    meta:    null,
+    fteOnly: true,
+    accent:  'red',
+    url:     null   /* ← paste this priority's ClickUp link here */
+  },
+  {
+    group:   "Today's Deadlines",
+    title:   'Complete all Flyer Reviews for all runs with a “Due date” of “Today”',
+    meta:    'Due before 4 PM EST',
+    fteOnly: true,
+    accent:  'red',
+    url:     null   /* ← paste this priority's ClickUp link here */
+  },
+  {
+    group:   "Today's Deadlines",
+    title:   'Complete all available uploads, starting from due soonest to due latest',
+    meta:    '“Upload Ready” section should be cleared overnight',
+    fteOnly: false,
+    accent:  'amber',
+    url:     null   /* ← paste this priority's ClickUp link here */
+  },
+  {
+    group:   'Remaining Work',
+    title:   'Complete all other available FQCs',
+    meta:    null,
+    fteOnly: false,
+    accent:  'green',
+    url:     null   /* ← paste this priority's ClickUp link here */
+  },
+  {
+    group:   'Remaining Work',
+    title:   'Complete all other available Flyer Reviews',
+    meta:    null,
+    fteOnly: true,
+    accent:  'green',
+    url:     null   /* ← paste this priority's ClickUp link here */
+  },
+  {
+    group:   'Remaining Work',
+    title:   'Complete any additional Uploads that have become ready, starting from earliest to latest “Due date”',
+    meta:    null,
+    fteOnly: false,
+    accent:  'green',
+    url:     null   /* ← paste this priority's ClickUp link here */
+  }
+];
+
+/* The grey footnote at the bottom. Set to null to remove it entirely. */
+const NOTE = 'Note: the “Due date” is set to the date before the flyer goes live as early as 12 AM EST. ' +
+             'It’s critical that all tasks are completed as soon as possible and with sufficient time ' +
+             'for subsequent steps to occur.';
+
+/* ═══════════════════════════════════════════════════════════════════════
+   EDIT ABOVE. The rendering code below draws the cards from the data.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+const ICON = {
+  clock: '<svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">' +
+         '<circle cx="8" cy="8" r="6.25"/><path d="M8 4.5V8l2.5 1.75" stroke-linecap="round"/></svg>',
+  info:  '<svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">' +
+         '<circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v4M8 4.9v.1" stroke-linecap="round"/></svg>',
+  external: '<svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">' +
+            '<path d="M6.5 3.25H3.25v9.5h9.5V9.5" stroke-linecap="round"/>' +
+            '<path d="M9.75 3.25h3v3M12.25 3.75L7.5 8.5" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+};
+
+/* Text always goes in via textContent, never string-concatenated into markup,
+   so quotes and apostrophes in the priorities can never break the page. */
+function el(tag, className, text) {
+  const node = document.createElement(tag);
+  if (className) node.className = className;
+  if (text != null) node.textContent = text;
+  return node;
+}
+
+function buildCard(priority, number) {
+  const linked = Boolean(priority.url);
+  const card = el(linked ? 'a' : 'div', 'card card--' + priority.accent);
+
+  if (linked) {
+    card.href = priority.url;
+    card.target = '_blank';
+    card.rel = 'noopener noreferrer';
+    card.setAttribute('aria-label', 'Priority ' + number + ': ' + priority.title + ' — opens in ClickUp in a new tab');
+  }
+
+  const pill = el('div', 'card-number', String(number));
+  pill.setAttribute('aria-hidden', 'true');   /* <ol> already conveys the order */
+  card.appendChild(pill);
+
+  const body = el('div', 'card-body');
+  body.appendChild(el('div', 'card-title', priority.title));
+
+  if (priority.meta) {
+    const meta = el('div', 'card-meta');
+    meta.innerHTML = ICON.clock;
+    meta.appendChild(el('span', null, priority.meta));
+    body.appendChild(meta);
+  }
+  card.appendChild(body);
+
+  if (priority.fteOnly) card.appendChild(el('span', 'card-badge', 'FTE Only'));
+
+  if (linked) {
+    const icon = el('span', 'card-link-icon');
+    icon.innerHTML = ICON.external;
+    card.appendChild(icon);
+  }
+
+  const item = document.createElement('li');
+  item.appendChild(card);
+  return item;
+}
+
+function render(container) {
+  let currentGroup = null;
+  let list = null;
+
+  PRIORITIES.forEach(function (priority, index) {
+    if (priority.group !== currentGroup) {
+      currentGroup = priority.group;
+
+      const section = el('section', 'section');
+      section.appendChild(el('h2', 'section-label', priority.group));
+
+      list = el('ol', 'cards');
+      list.start = index + 1;
+      section.appendChild(list);
+      container.appendChild(section);
+    }
+    list.appendChild(buildCard(priority, index + 1));
+  });
+
+  if (NOTE) {
+    const note = el('div', 'note');
+    note.innerHTML = ICON.info;
+    note.appendChild(el('span', null, NOTE));
+    container.appendChild(note);
+  }
+}
+
+render(document.getElementById('chart-body'));
+</script>
+
+</body>
+</html>
