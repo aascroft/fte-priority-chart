@@ -186,6 +186,48 @@
     color: var(--text-label);
   }
 
+  /* ── Callout (the Friday rule) ──────────────────────────────────────── */
+
+  /* Deliberately louder than .note: this is a rule that changes what you do,
+     not background information, so it keeps full text colour and an amber
+     edge. Its own vertical margins stand in for the .section + .section gap,
+     which no longer applies once the callout sits between two sections. */
+  .callout {
+    display: flex;
+    align-items: flex-start;
+    gap: 11px;
+    margin: 24px 0;
+    padding: 14px 16px;
+    background: rgba(217, 154, 43, 0.09);
+    border: 1px solid rgba(217, 154, 43, 0.32);
+    border-left: 3px solid var(--accent-amber);
+    border-radius: 10px;
+  }
+
+  .callout svg {
+    flex: 0 0 auto;
+    margin-top: 2px;
+    color: var(--accent-amber);
+  }
+
+  .callout-body { flex: 1 1 auto; min-width: 0; }
+
+  .callout-label {
+    margin: 0 0 3px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--accent-amber);
+  }
+
+  .callout-text {
+    font-size: 13.5px;
+    font-weight: 500;
+    line-height: 1.5;
+    color: var(--text);
+  }
+
   @media (max-width: 480px) {
     .chart { padding: 18px 14px 24px; }
     .card { padding: 14px 15px; gap: 11px; }
@@ -217,6 +259,8 @@
      meta     Small grey line underneath. Use null for none.
      fteOnly  true shows the blue "FTE Only" badge.
      accent   'red' | 'amber' | 'green' — the left edge and number colour.
+              The exact shade comes from RAMPS below, which fades the colour
+              across each group of cards that share it.
      url      A ClickUp link makes the whole card clickable.
               Use null to leave the card as plain text.
 
@@ -283,6 +327,24 @@ const PRIORITIES = [
   }
 ];
 
+/* Each accent fades across the run of consecutive cards that share it, from
+   the first colour to the second. Red darkest-first; green lightest-first so
+   the last card in "Remaining Work" is the deepest shade. Add or remove a
+   priority and the steps redistribute themselves — nothing here to update. */
+const RAMPS = {
+  red:   ['#8c1418', '#e5484d'],
+  amber: ['#d99a2b', '#d99a2b'],
+  green: ['#2bb894', '#0f5344']
+};
+
+/* The amber callout. Set FRIDAY_NOTE to null to remove it entirely. */
+const FRIDAY_NOTE = 'On Fridays, FQC and Flyer Review should also be completed before 5 PM EST ' +
+                    'for all runs with a due date of “Saturday” or “Sunday”.';
+
+/* Which section heading the callout sits directly above. If no section has
+   this name, the callout falls back to just above the grey footnote. */
+const FRIDAY_NOTE_ABOVE = 'Remaining Work';
+
 /* The grey footnote at the bottom. Set to null to remove it entirely. */
 const NOTE = 'Note: the “Due date” is set to the date before the flyer goes live as early as 12 AM EST. ' +
              'It’s critical that all tasks are completed as soon as possible and with sufficient time ' +
@@ -297,10 +359,55 @@ const ICON = {
          '<circle cx="8" cy="8" r="6.25"/><path d="M8 4.5V8l2.5 1.75" stroke-linecap="round"/></svg>',
   info:  '<svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">' +
          '<circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v4M8 4.9v.1" stroke-linecap="round"/></svg>',
+  alert: '<svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">' +
+         '<path d="M8 1.9 1.4 13.6h13.2L8 1.9Z" stroke-linejoin="round"/>' +
+         '<path d="M8 6.1v3.4M8 11.6v.1" stroke-linecap="round"/></svg>',
   external: '<svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">' +
             '<path d="M6.5 3.25H3.25v9.5h9.5V9.5" stroke-linecap="round"/>' +
             '<path d="M9.75 3.25h3v3M12.25 3.75L7.5 8.5" stroke-linecap="round" stroke-linejoin="round"/></svg>'
 };
+
+/* ── Accent gradient ──────────────────────────────────────────────────────
+   Blends between two hex colours. Plain sRGB interpolation is enough here:
+   both ramps stay within a single hue, so there's no muddy midpoint to
+   avoid. */
+function mixHex(from, to, t) {
+  const a = parseInt(from.slice(1), 16);
+  const b = parseInt(to.slice(1), 16);
+  let out = '#';
+
+  for (let shift = 16; shift >= 0; shift -= 8) {
+    const channel = Math.round(((a >> shift) & 255) * (1 - t) + ((b >> shift) & 255) * t);
+    out += channel.toString(16).padStart(2, '0');
+  }
+  return out;
+}
+
+/* One colour per priority. A "run" is consecutive cards sharing both accent
+   and section, and the ramp is spread evenly across it; a run of one keeps
+   the starting colour. */
+function rampAccents(priorities) {
+  const shades = [];
+  let start = 0;
+
+  while (start < priorities.length) {
+    let end = start;
+    while (end + 1 < priorities.length &&
+           priorities[end + 1].accent === priorities[start].accent &&
+           priorities[end + 1].group  === priorities[start].group) {
+      end++;
+    }
+
+    const ramp = RAMPS[priorities[start].accent];
+    const steps = end - start;
+
+    for (let i = 0; i <= steps; i++) {
+      shades.push(ramp ? mixHex(ramp[0], ramp[1], steps === 0 ? 0 : i / steps) : null);
+    }
+    start = end + 1;
+  }
+  return shades;
+}
 
 /* Text always goes in via textContent, never string-concatenated into markup,
    so quotes and apostrophes in the priorities can never break the page. */
@@ -311,9 +418,13 @@ function el(tag, className, text) {
   return node;
 }
 
-function buildCard(priority, number) {
+function buildCard(priority, number, shade) {
   const linked = Boolean(priority.url);
+
+  /* The class carries the flat accent as a fallback; the ramped shade
+     overrides it when one was computed. */
   const card = el(linked ? 'a' : 'div', 'card card--' + priority.accent);
+  if (shade) card.style.setProperty('--accent', shade);
 
   if (linked) {
     card.href = priority.url;
@@ -350,13 +461,33 @@ function buildCard(priority, number) {
   return item;
 }
 
+function buildCallout() {
+  const callout = el('div', 'callout');
+  callout.innerHTML = ICON.alert;
+
+  const body = el('div', 'callout-body');
+  body.appendChild(el('p', 'callout-label', 'Fridays'));
+  body.appendChild(el('div', 'callout-text', FRIDAY_NOTE));
+  callout.appendChild(body);
+
+  return callout;
+}
+
 function render(container) {
   let currentGroup = null;
   let list = null;
+  let calloutPlaced = false;
+
+  const shades = rampAccents(PRIORITIES);
 
   PRIORITIES.forEach(function (priority, index) {
     if (priority.group !== currentGroup) {
       currentGroup = priority.group;
+
+      if (FRIDAY_NOTE && priority.group === FRIDAY_NOTE_ABOVE) {
+        container.appendChild(buildCallout());
+        calloutPlaced = true;
+      }
 
       const section = el('section', 'section');
       section.appendChild(el('h2', 'section-label', priority.group));
@@ -366,8 +497,11 @@ function render(container) {
       section.appendChild(list);
       container.appendChild(section);
     }
-    list.appendChild(buildCard(priority, index + 1));
+    list.appendChild(buildCard(priority, index + 1, shades[index]));
   });
+
+  /* FRIDAY_NOTE_ABOVE didn't match any section — show it rather than drop it. */
+  if (FRIDAY_NOTE && !calloutPlaced) container.appendChild(buildCallout());
 
   if (NOTE) {
     const note = el('div', 'note');
