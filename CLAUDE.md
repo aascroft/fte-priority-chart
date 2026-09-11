@@ -30,6 +30,11 @@ land today, two of them against hard clock times — FQCs before 3 PM EST, Flyer
 4 PM EST. **Remaining Work** (5–7) is the same categories of task without today's deadline, worked
 once the deadline items are clear.
 
+**Fridays carry an extra rule**, shown as an amber callout between the two sections: FQC and Flyer
+Review should also be completed before 5 PM EST for runs with a due date of Saturday or Sunday. It
+reads as "also", so it sits on top of the daily deadlines rather than replacing them. The reasoning
+behind the 5 PM time wasn't recorded — ask Stephanie Reintjes or Allan before changing it.
+
 The `Due date` is the date *before* a flyer goes live, and a flyer can go live as early as 12 AM
 EST. So "due today" genuinely means today — there is no overnight slack, which is the reasoning
 behind the footnote on the page and behind the ordering itself.
@@ -59,6 +64,9 @@ Locked in a scoping conversation before the build. Don't quietly reverse these �
 | **Content in a data block, cards drawn by script** | Keeps numbering automatic and each edit to one line, and makes the deferred expand feature a template change rather than a rewrite. Trade-off accepted: the page needs JavaScript on. |
 | **Self-contained single file** | No external CSS, fonts or scripts. Survives embedding, works offline, can't rot. **Keep it this way** — don't introduce a framework or a CDN link. |
 | **Edits via Claude Code against this repo** | Rather than a hand-editable config file or an admin UI. Hence this file. |
+| **Friday rule as a callout, not an eighth priority** | It qualifies priorities 1 and 3 rather than being work of its own, so numbering it would misrepresent it. Placed between the sections so it reads after the deadline cards it modifies. |
+| **Accent colours computed, not hardcoded per card** | A `RAMPS` block holds two endpoints per accent; shades are spread across each run of same-accent cards at render time. Keeps the "insert a priority and everything follows" property the automatic numbering already had. |
+| **Ramps anchored on the original colours** | Each ramp keeps the previous flat colour at one end and extends in one direction only. The number pill is white text on the accent, so pale endpoints fail contrast — the current light ends are near the safe limit. |
 
 Two deliberate departures from the original screenshot, both defensible:
 
@@ -100,6 +108,10 @@ on request, not as oversights.
   implies progress tracking that doesn't exist.
 - **Time-based urgency** (e.g. priority 1 turning red past 2 PM EST). Needs a decision on time
   zones first — the deadlines are EST but vendors may not be.
+- **Showing the Friday callout only on Fridays.** Deliberately not done: it's always visible, which
+  is why it names Fridays in its own text. Hiding it the rest of the week needs the same time-zone
+  decision as the item above — a vendor whose clock has ticked past midnight into Saturday would
+  lose the rule exactly when they still need it. Would hook into `buildCallout()`.
 
 ## Things to know before changing this
 
@@ -108,6 +120,9 @@ on request, not as oversights.
   "improve" the seven priorities unless asked. Ambiguity here costs someone a missed deadline.
 - **Keep the file self-contained** and keep content separated from code, so a non-developer can
   find the words they want to change.
+- **The README quotes measured embed heights** (867 / 1011 / 1154px at 720 / 500 / 390px wide).
+  Anything that adds vertical content makes them wrong, and a stale number means a scrollbar inside
+  someone's embed. Re-measure and update the README in the same commit.
 - **Check both widths after visual changes.** Headless Chromium clamps its window to a 500px
   minimum, so a `--window-size=390` screenshot silently crops and looks broken. To see a real phone
   render, load the page inside a 390px-wide iframe on a wrapper page and screenshot that.

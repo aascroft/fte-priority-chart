@@ -33,13 +33,17 @@ works everywhere and is the recommended default.
 
 ```html
 <iframe src="https://aascroft.github.io/fte-priority-chart/"
-        width="100%" height="780" style="border:0;" loading="lazy"
+        width="100%" height="880" style="border:0;" loading="lazy"
         title="FTE Vendor Daily Priorities"></iframe>
 ```
 
-`height="780"` fits the current seven priorities on a full-width page. In a narrow column the text
-wraps to more lines and needs more room — if you see a scrollbar inside the box, raise the number
-to `1000` or so. The height can't adjust itself; that's an iframe limitation, not a bug.
+`height="880"` fits the current seven priorities and the Friday callout on a full-width page. In a
+narrow column the text wraps to more lines and needs more room — if you see a scrollbar inside the
+box, raise the number to `1180` or so. The height can't adjust itself; that's an iframe limitation,
+not a bug.
+
+Measured heights, if you need to size a column exactly: 867px at full width, 1011px at 500px wide,
+1154px at phone width. Anything added to the page pushes these up — re-measure rather than guess.
 
 Where embedding works:
 
@@ -90,13 +94,55 @@ something dead.
 | Whether the blue **FTE Only** badge shows | `fteOnly:` — `true` or `false` |
 | The colour of the left edge and number | `accent:` — `'red'`, `'amber'` or `'green'` |
 | Which section heading it sits under | `group:` |
+| The amber **Fridays** callout | the `FRIDAY_NOTE` line — or `null` to remove it |
+| Which section the callout sits above | `FRIDAY_NOTE_ABOVE` — a section heading name |
+| How far each colour fades across a section | the `RAMPS` block |
 | The grey footnote at the bottom | the `NOTE` line below the priorities |
+
+### The Friday callout
+
+The amber box between the two sections. Two lines control it:
+
+```js
+const FRIDAY_NOTE = 'On Fridays, FQC and Flyer Review should also be completed before 5 PM EST ' +
+                    'for all runs with a due date of “Saturday” or “Sunday”.';
+
+const FRIDAY_NOTE_ABOVE = 'Remaining Work';
+```
+
+`FRIDAY_NOTE_ABOVE` names the section heading it sits directly above — change it to
+`"Today's Deadlines"` to move it to the top of the page. If the name doesn't match any section, the
+callout drops to just above the grey footnote rather than disappearing. Set `FRIDAY_NOTE` to `null`
+to remove the box entirely.
+
+It's styled louder than the grey footnote on purpose: it's an instruction that changes what a vendor
+does, not background information.
+
+### Accent colours
+
+Each colour fades across the run of cards that share it — red darkest at #1 to lightest at #3, green
+lightest at #5 to darkest at #7. You set only the two endpoints:
+
+```js
+const RAMPS = {
+  red:   ['#8c1418', '#e5484d'],   /* dark → light */
+  amber: ['#d99a2b', '#d99a2b'],   /* only one amber card, so both ends match */
+  green: ['#2bb894', '#0f5344']    /* light → dark */
+};
+```
+
+The in-between shades are worked out from however many cards share that accent, so adding or
+reordering a priority needs no colour changes — same as the numbering. Swap the two values in a pair
+to reverse a fade.
+
+One caution if you change these: the number sits on the colour in white text, so a pale endpoint gets
+hard to read. The current light ends are about as pale as is safe.
 
 ### Add, remove or reorder a priority
 
 Copy an existing `{ ... }` block, paste it where you want it, and edit the fields. **Don't renumber
 anything** — the numbers are generated from the order of the list, so they always come out right.
-To remove a priority, delete its whole block.
+To remove a priority, delete its whole block. Colours and numbering both follow automatically.
 
 ---
 
