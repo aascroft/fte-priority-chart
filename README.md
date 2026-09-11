@@ -90,7 +90,7 @@ something dead.
 | To change | Edit |
 |---|---|
 | The instruction a vendor reads | `title:` |
-| The small grey line underneath (e.g. `Due before 3 PM EST`) | `meta:` — or `null` for none |
+| The small grey line underneath (e.g. `Due before 3 PM ET`) | `meta:` — or `null` for none |
 | Whether the blue **FTE Only** badge shows | `fteOnly:` — `true` or `false` |
 | The colour of the left edge and number | `accent:` — `'red'`, `'amber'` or `'green'` |
 | Which section heading it sits under | `group:` |
@@ -104,8 +104,8 @@ something dead.
 The amber box between the two sections. Two lines control it:
 
 ```js
-const FRIDAY_NOTE = 'On Fridays, FQC and Flyer Review should also be completed before 5 PM EST ' +
-                    'for all runs with a due date of “Saturday” or “Sunday”.';
+const FRIDAY_NOTE = 'On Fridays, FQC and Flyer Review should be completed by 5:00 PM ET ' +
+                    'for all runs with a Saturday or Sunday due date.';
 
 const FRIDAY_NOTE_ABOVE = 'Remaining Work';
 ```

@@ -272,7 +272,7 @@ const PRIORITIES = [
   {
     group:   "Today's Deadlines",
     title:   'Complete all FQCs for all runs with a “Due date” of “Today”',
-    meta:    'Due before 3 PM EST',
+    meta:    'Due before 3 PM ET',
     fteOnly: false,
     accent:  'red',
     url:     'https://app.clickup.com/t/9003147350/86e2tyev2'
@@ -288,7 +288,7 @@ const PRIORITIES = [
   {
     group:   "Today's Deadlines",
     title:   'Complete all Flyer Reviews for all runs with a “Due date” of “Today”',
-    meta:    'Due before 4 PM EST',
+    meta:    'Due before 4 PM ET',
     fteOnly: true,
     accent:  'red',
     url:     null   /* ← paste this priority's ClickUp link here */
@@ -338,15 +338,15 @@ const RAMPS = {
 };
 
 /* The amber callout. Set FRIDAY_NOTE to null to remove it entirely. */
-const FRIDAY_NOTE = 'On Fridays, FQC and Flyer Review should also be completed before 5 PM EST ' +
-                    'for all runs with a due date of “Saturday” or “Sunday”.';
+const FRIDAY_NOTE = 'On Fridays, FQC and Flyer Review should be completed by 5:00 PM ET ' +
+                    'for all runs with a Saturday or Sunday due date.';
 
 /* Which section heading the callout sits directly above. If no section has
    this name, the callout falls back to just above the grey footnote. */
 const FRIDAY_NOTE_ABOVE = 'Remaining Work';
 
 /* The grey footnote at the bottom. Set to null to remove it entirely. */
-const NOTE = 'Note: the “Due date” is set to the date before the flyer goes live as early as 12 AM EST. ' +
+const NOTE = 'Note: the “Due date” is set to the date before the flyer goes live as early as 12 AM ET. ' +
              'It’s critical that all tasks are completed as soon as possible and with sufficient time ' +
              'for subsequent steps to occur.';
 

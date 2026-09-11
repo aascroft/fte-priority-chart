@@ -26,17 +26,21 @@ Vendors handle four kinds of task. **FQCs** and **Uploads** are done by all vend
 Reviews** and **Page Swap / revision tasks** are marked `FTE Only` and are not for every vendor.
 
 The chart splits into two sections. **Today's Deadlines** (priorities 1–4) are time-bound and must
-land today, two of them against hard clock times — FQCs before 3 PM EST, Flyer Reviews before
-4 PM EST. **Remaining Work** (5–7) is the same categories of task without today's deadline, worked
+land today, two of them against hard clock times — FQCs before 3 PM ET, Flyer Reviews before
+4 PM ET. **Remaining Work** (5–7) is the same categories of task without today's deadline, worked
 once the deadline items are clear.
 
 **Fridays carry an extra rule**, shown as an amber callout between the two sections: FQC and Flyer
-Review should also be completed before 5 PM EST for runs with a due date of Saturday or Sunday. It
-reads as "also", so it sits on top of the daily deadlines rather than replacing them. The reasoning
-behind the 5 PM time wasn't recorded — ask Stephanie Reintjes or Allan before changing it.
+Review should be completed by 5:00 PM ET for runs with a Saturday or Sunday due date. The reasoning
+behind the 5:00 PM time wasn't recorded — ask Stephanie Reintjes or Allan before changing it.
+
+**Times are written as ET, not EST**, page-wide. ET is the correct label because the deadline is a
+wall-clock time that doesn't shift with daylight saving, whereas EST names only the winter offset.
+The three older labels (3 PM, 4 PM, 12 AM) were changed from EST to ET in the same pass that added
+the Friday rule, so the page is now consistent — keep new times in ET.
 
 The `Due date` is the date *before* a flyer goes live, and a flyer can go live as early as 12 AM
-EST. So "due today" genuinely means today — there is no overnight slack, which is the reasoning
+ET. So "due today" genuinely means today — there is no overnight slack, which is the reasoning
 behind the footnote on the page and behind the ordering itself.
 
 ## Files
@@ -106,8 +110,8 @@ on request, not as oversights.
   needed to drive it already exists on every priority.
 - **Tick-off progress** saved per-vendor in their own browser. Rejected for v1 partly because it
   implies progress tracking that doesn't exist.
-- **Time-based urgency** (e.g. priority 1 turning red past 2 PM EST). Needs a decision on time
-  zones first — the deadlines are EST but vendors may not be.
+- **Time-based urgency** (e.g. priority 1 turning red past 2 PM ET). Needs a decision on time
+  zones first — the deadlines are ET but vendors may not be.
 - **Showing the Friday callout only on Fridays.** Deliberately not done: it's always visible, which
   is why it names Fridays in its own text. Hiding it the rest of the week needs the same time-zone
   decision as the item above — a vendor whose clock has ticked past midnight into Saturday would
